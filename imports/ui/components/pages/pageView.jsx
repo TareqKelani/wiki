@@ -8,9 +8,13 @@ import {stateToHTML} from "draft-js-export-html";
 import {Categories} from "../../../api/categories";
 import {TeamsCollection} from "../../../api/teams";
 import {Metadata} from "../../../api/metadata";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faEdit, faEye, faTrash} from "@fortawesome/free-solid-svg-icons";
+import {useHistory} from "react-router-dom";
 
 export const PageView = () => {
     let {id} = useParams();
+    const history = useHistory();
     const [page, setPage] = useState({
         _id: 0,
         content: null,
@@ -55,6 +59,32 @@ export const PageView = () => {
                     <h1>Title: {page.title}</h1>
                     <p className='page-category-subtitle'>Category: {page.category.title}</p>
                     <p className='page-category-subtitle'>Team: {page.team.title}</p>
+
+                    <button type="button" className="btn btn-default" onClick={() => {
+                        history.push("/pages/update/" + id);
+                    }}>
+                        Edit: <FontAwesomeIcon aria-hidden="true" icon={faEdit}/>
+                    </button>
+                    <button type="button" className="btn btn-default" onClick={() => {
+
+                        // if (confirm('Are you sure you want to go to that link?'))
+                        //     history.push("/pages/remove/" + page._id);
+                        new Confirmation({
+                            message: "Are you sure you want to delete " + page.title + " ?",
+                            title: "Delete confirmation",
+                            cancelText: "Cancel",
+                            okText: "Ok",
+                            success: true, // whether the button should be green or red
+                            focus: "cancel" // which button to autofocus, "cancel" (default) or "ok", or "none"
+                        }, function (ok) {
+                            // ok is true if the user clicked on "ok", false otherwise
+                            if (ok) {
+                                history.push("/pages/delete/" + id);
+                            }
+                        });
+                    }}>
+                       Delete: <FontAwesomeIcon aria-hidden="true" icon={faTrash}/>
+                    </button>
                 </div>
             </div>
 
